@@ -11,15 +11,16 @@
 #include "../../Utils/Singleton.hpp"
 #include "sdk.hpp"
 
-struct MenuEvents : public MenuEventHandler, public Singleton<MenuEvents>
+template <EventPriorityType PRIORITY>
+struct MenuEvents : public MenuEventHandler, public Singleton<MenuEvents<PRIORITY>>
 {
 	void onPlayerSelectedMenuRow(IPlayer& player, MenuRow row) override
 	{
-		ComponentManager::Get()->CallEvent("onPlayerSelectedMenuRow", EventReturnHandler::None, &player, int(row));
+		ComponentManager::Get()->CallEvent<PRIORITY>("onPlayerSelectedMenuRow", EventReturnHandler::None, &player, int(row));
 	}
 
 	void onPlayerExitedMenu(IPlayer& player) override
 	{
-		ComponentManager::Get()->CallEvent("onPlayerExitedMenu", EventReturnHandler::None, &player);
+		ComponentManager::Get()->CallEvent<PRIORITY>("onPlayerExitedMenu", EventReturnHandler::None, &player);
 	}
 };

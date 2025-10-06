@@ -11,10 +11,11 @@
 #include "../../Utils/Singleton.hpp"
 #include "sdk.hpp"
 
-struct CoreEvents : public CoreEventHandler, public Singleton<CoreEvents>
+template <EventPriorityType PRIORITY>
+struct CoreEvents : public CoreEventHandler, public Singleton<CoreEvents<PRIORITY>>
 {
 	void onTick(Microseconds elapsed, TimePoint now) override
 	{
-		ComponentManager::Get()->CallEvent("onTick", EventReturnHandler::None, int(elapsed.count()));
+		ComponentManager::Get()->CallEvent<PRIORITY>("onTick", EventReturnHandler::None, int(elapsed.count()));
 	}
 };

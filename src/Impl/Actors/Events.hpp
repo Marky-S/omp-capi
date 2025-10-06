@@ -11,20 +11,21 @@
 #include "../../Utils/Singleton.hpp"
 #include "sdk.hpp"
 
-struct ActorEvents : public ActorEventHandler, public Singleton<ActorEvents>
+template <EventPriorityType PRIORITY>
+struct ActorEvents : public ActorEventHandler, public Singleton<ActorEvents<PRIORITY>>
 {
 	void onPlayerGiveDamageActor(IPlayer& player, IActor& actor, float amount, unsigned weapon, BodyPart part) override
 	{
-		ComponentManager::Get()->CallEvent("onPlayerGiveDamageActor", EventReturnHandler::None, &player, &actor, amount, int(weapon), int(part));
+		ComponentManager::Get()->CallEvent<PRIORITY>("onPlayerGiveDamageActor", EventReturnHandler::None, &player, &actor, amount, int(weapon), int(part));
 	}
 
 	void onActorStreamIn(IActor& actor, IPlayer& forPlayer) override
 	{
-		ComponentManager::Get()->CallEvent("onActorStreamIn", EventReturnHandler::None, &actor, &forPlayer);
+		ComponentManager::Get()->CallEvent<PRIORITY>("onActorStreamIn", EventReturnHandler::None, &actor, &forPlayer);
 	}
 
 	void onActorStreamOut(IActor& actor, IPlayer& forPlayer) override
 	{
-		ComponentManager::Get()->CallEvent("onActorStreamOut", EventReturnHandler::None, &actor, &forPlayer);
+		ComponentManager::Get()->CallEvent<PRIORITY>("onActorStreamOut", EventReturnHandler::None, &actor, &forPlayer);
 	}
 };

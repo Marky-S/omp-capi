@@ -11,27 +11,28 @@
 #include "../../Utils/Singleton.hpp"
 #include "sdk.hpp"
 
-struct TextDrawEvents : public TextDrawEventHandler, public Singleton<TextDrawEvents>
+template <EventPriorityType PRIORITY>
+struct TextDrawEvents : public TextDrawEventHandler, public Singleton<TextDrawEvents<PRIORITY>>
 {
 	virtual bool onPlayerCancelTextDrawSelection(IPlayer& player) override
 	{
-		ComponentManager::Get()->CallEvent("onPlayerCancelTextDrawSelection", EventReturnHandler::None, &player);
+		ComponentManager::Get()->CallEvent<PRIORITY>("onPlayerCancelTextDrawSelection", EventReturnHandler::None, &player);
 		return true;
 	}
 
 	virtual bool onPlayerCancelPlayerTextDrawSelection(IPlayer& player) override
 	{
-		ComponentManager::Get()->CallEvent("onPlayerCancelPlayerTextDrawSelection", EventReturnHandler::None, &player);
+		ComponentManager::Get()->CallEvent<PRIORITY>("onPlayerCancelPlayerTextDrawSelection", EventReturnHandler::None, &player);
 		return true;
 	}
 
 	void onPlayerClickTextDraw(IPlayer& player, ITextDraw& td) override
 	{
-		ComponentManager::Get()->CallEvent("onPlayerClickTextDraw", EventReturnHandler::None, &player, &td);
+		ComponentManager::Get()->CallEvent<PRIORITY>("onPlayerClickTextDraw", EventReturnHandler::None, &player, &td);
 	}
 
 	void onPlayerClickPlayerTextDraw(IPlayer& player, IPlayerTextDraw& td) override
 	{
-		ComponentManager::Get()->CallEvent("onPlayerClickPlayerTextDraw", EventReturnHandler::None, &player, &td);
+		ComponentManager::Get()->CallEvent<PRIORITY>("onPlayerClickPlayerTextDraw", EventReturnHandler::None, &player, &td);
 	}
 };

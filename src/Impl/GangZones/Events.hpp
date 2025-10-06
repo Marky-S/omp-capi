@@ -11,13 +11,14 @@
 #include "../../Utils/Singleton.hpp"
 #include "sdk.hpp"
 
-struct GangZoneEvents : public GangZoneEventHandler, public Singleton<GangZoneEvents>
+template <EventPriorityType PRIORITY>
+struct GangZoneEvents : public GangZoneEventHandler, public Singleton<GangZoneEvents<PRIORITY>>
 {
 	void onPlayerEnterGangZone(IPlayer& player, IGangZone& zone) override
 	{
 		if (zone.getLegacyPlayer() == nullptr)
 		{
-			ComponentManager::Get()->CallEvent("onPlayerEnterGangZone", EventReturnHandler::None, &player, &zone);
+			ComponentManager::Get()->CallEvent<PRIORITY>("onPlayerEnterGangZone", EventReturnHandler::None, &player, &zone);
 		}
 		else if (auto data = queryExtension<IPlayerGangZoneData>(player))
 		{
@@ -28,7 +29,7 @@ struct GangZoneEvents : public GangZoneEventHandler, public Singleton<GangZoneEv
 	{
 		if (zone.getLegacyPlayer() == nullptr)
 		{
-			ComponentManager::Get()->CallEvent("onPlayerLeaveGangZone", EventReturnHandler::None, &player, &zone);
+			ComponentManager::Get()->CallEvent<PRIORITY>("onPlayerLeaveGangZone", EventReturnHandler::None, &player, &zone);
 		}
 		else if (auto data = queryExtension<IPlayerGangZoneData>(player))
 		{
@@ -39,7 +40,7 @@ struct GangZoneEvents : public GangZoneEventHandler, public Singleton<GangZoneEv
 	{
 		if (zone.getLegacyPlayer() == nullptr)
 		{
-			ComponentManager::Get()->CallEvent("onPlayerClickGangZone", EventReturnHandler::None, &player, &zone);
+			ComponentManager::Get()->CallEvent<PRIORITY>("onPlayerClickGangZone", EventReturnHandler::None, &player, &zone);
 		}
 		else if (auto data = queryExtension<IPlayerGangZoneData>(player))
 		{

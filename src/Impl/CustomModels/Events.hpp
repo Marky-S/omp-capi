@@ -11,15 +11,16 @@
 #include "../../Utils/Singleton.hpp"
 #include "sdk.hpp"
 
-struct CustomModelsEvents : public PlayerModelsEventHandler, public Singleton<CustomModelsEvents>
+template <EventPriorityType PRIORITY>
+struct CustomModelsEvents : public PlayerModelsEventHandler, public Singleton<CustomModelsEvents<PRIORITY>>
 {
 	virtual void onPlayerFinishedDownloading(IPlayer& player) override
 	{
-		ComponentManager::Get()->CallEvent("onPlayerFinishedDownloading", EventReturnHandler::None, &player, player.getVirtualWorld());
+		ComponentManager::Get()->CallEvent<PRIORITY>("onPlayerFinishedDownloading", EventReturnHandler::None, &player, player.getVirtualWorld());
 	}
 
 	virtual bool onPlayerRequestDownload(IPlayer& player, ModelDownloadType type, uint32_t checksum) override
 	{
-		return ComponentManager::Get()->CallEvent("onPlayerRequestDownload", EventReturnHandler::StopAtFalse, &player, int(type), int(checksum));
+		return ComponentManager::Get()->CallEvent<PRIORITY>("onPlayerRequestDownload", EventReturnHandler::StopAtFalse, &player, int(type), int(checksum));
 	}
 };

@@ -11,31 +11,32 @@
 #include "../../Utils/Singleton.hpp"
 #include "sdk.hpp"
 
-struct ObjectEvents : public ObjectEventHandler, public Singleton<ObjectEvents>
+template <EventPriorityType PRIORITY>
+struct ObjectEvents : public ObjectEventHandler, public Singleton<ObjectEvents<PRIORITY>>
 {
 	void onMoved(IObject& object) override
 	{
-		ComponentManager::Get()->CallEvent("onObjectMove", EventReturnHandler::None, &object);
+		ComponentManager::Get()->CallEvent<PRIORITY>("onObjectMove", EventReturnHandler::None, &object);
 	}
 
 	void onPlayerObjectMoved(IPlayer& player, IPlayerObject& object) override
 	{
-		ComponentManager::Get()->CallEvent("onPlayerObjectMove", EventReturnHandler::None, &player, &object);
+		ComponentManager::Get()->CallEvent<PRIORITY>("onPlayerObjectMove", EventReturnHandler::None, &player, &object);
 	}
 
 	void onObjectEdited(IPlayer& player, IObject& object, ObjectEditResponse response, Vector3 offset, Vector3 rotation) override
 	{
-		ComponentManager::Get()->CallEvent("onPlayerEditObject", EventReturnHandler::None, &player, &object, int(response), offset.x, offset.y, offset.z, rotation.x, rotation.y, rotation.z);
+		ComponentManager::Get()->CallEvent<PRIORITY>("onPlayerEditObject", EventReturnHandler::None, &player, &object, int(response), offset.x, offset.y, offset.z, rotation.x, rotation.y, rotation.z);
 	}
 
 	void onPlayerObjectEdited(IPlayer& player, IPlayerObject& object, ObjectEditResponse response, Vector3 offset, Vector3 rotation) override
 	{
-		ComponentManager::Get()->CallEvent("onPlayerEditPlayerObject", EventReturnHandler::None, &player, &object, int(response), offset.x, offset.y, offset.z, rotation.x, rotation.y, rotation.z);
+		ComponentManager::Get()->CallEvent<PRIORITY>("onPlayerEditPlayerObject", EventReturnHandler::None, &player, &object, int(response), offset.x, offset.y, offset.z, rotation.x, rotation.y, rotation.z);
 	}
 
 	void onPlayerAttachedObjectEdited(IPlayer& player, int index, bool saved, const ObjectAttachmentSlotData& data) override
 	{
-		ComponentManager::Get()->CallEvent("onPlayerEditAttachedObject", EventReturnHandler::None,
+		ComponentManager::Get()->CallEvent<PRIORITY>("onPlayerEditAttachedObject", EventReturnHandler::None,
 			&player, saved, index, data.model, data.bone,
 			data.offset.x, data.offset.y, data.offset.z,
 			data.rotation.x, data.rotation.y, data.rotation.z,
@@ -44,11 +45,11 @@ struct ObjectEvents : public ObjectEventHandler, public Singleton<ObjectEvents>
 
 	void onObjectSelected(IPlayer& player, IObject& object, int model, Vector3 position) override
 	{
-		ComponentManager::Get()->CallEvent("onPlayerSelectObject", EventReturnHandler::None, &player, &object, model, position.x, position.y, position.z);
+		ComponentManager::Get()->CallEvent<PRIORITY>("onPlayerSelectObject", EventReturnHandler::None, &player, &object, model, position.x, position.y, position.z);
 	}
 
 	void onPlayerObjectSelected(IPlayer& player, IPlayerObject& object, int model, Vector3 position) override
 	{
-		ComponentManager::Get()->CallEvent("onPlayerSelectPlayerObject", EventReturnHandler::None, &player, &object, model, position.x, position.y, position.z);
+		ComponentManager::Get()->CallEvent<PRIORITY>("onPlayerSelectPlayerObject", EventReturnHandler::None, &player, &object, model, position.x, position.y, position.z);
 	}
 };

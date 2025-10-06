@@ -11,26 +11,27 @@
 #include "../../Utils/Singleton.hpp"
 #include "sdk.hpp"
 
-struct CheckpointEvents : public PlayerCheckpointEventHandler, public Singleton<CheckpointEvents>
+template <EventPriorityType PRIORITY>
+struct CheckpointEvents : public PlayerCheckpointEventHandler, public Singleton<CheckpointEvents<PRIORITY>>
 {
 	void onPlayerEnterCheckpoint(IPlayer& player) override
 	{
-		ComponentManager::Get()->CallEvent("onPlayerEnterCheckpoint", EventReturnHandler::None, &player);
+		ComponentManager::Get()->CallEvent<PRIORITY>("onPlayerEnterCheckpoint", EventReturnHandler::None, &player);
 	}
 
 	void onPlayerLeaveCheckpoint(IPlayer& player) override
 	{
-		ComponentManager::Get()->CallEvent("onPlayerLeaveCheckpoint", EventReturnHandler::None, &player);
+		ComponentManager::Get()->CallEvent<PRIORITY>("onPlayerLeaveCheckpoint", EventReturnHandler::None, &player);
 	}
 
 	void onPlayerEnterRaceCheckpoint(IPlayer& player) override
 	{
-		ComponentManager::Get()->CallEvent("onPlayerEnterRaceCheckpoint", EventReturnHandler::None, &player);
+		ComponentManager::Get()->CallEvent<PRIORITY>("onPlayerEnterRaceCheckpoint", EventReturnHandler::None, &player);
 	}
 
 	void onPlayerLeaveRaceCheckpoint(IPlayer& player) override
 	{
 
-		ComponentManager::Get()->CallEvent("onPlayerLeaveRaceCheckpoint", EventReturnHandler::None, &player);
+		ComponentManager::Get()->CallEvent<PRIORITY>("onPlayerLeaveRaceCheckpoint", EventReturnHandler::None, &player);
 	}
 };

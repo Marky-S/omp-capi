@@ -11,11 +11,12 @@
 #include "../../Utils/Singleton.hpp"
 #include "sdk.hpp"
 
-struct ConsoleEvents : public ConsoleEventHandler, public Singleton<ConsoleEvents>
+template <EventPriorityType PRIORITY>
+struct ConsoleEvents : public ConsoleEventHandler, public Singleton<ConsoleEvents<PRIORITY>>
 {
 	bool onConsoleText(StringView command, StringView parameters, const ConsoleCommandSenderData& sender) override
 	{
-		return ComponentManager::Get()->CallEvent("onConsoleText", EventReturnHandler::StopAtTrue, CREATE_CAPI_STRING_VIEW(command), CREATE_CAPI_STRING_VIEW(parameters));
+		return ComponentManager::Get()->CallEvent<PRIORITY>("onConsoleText", EventReturnHandler::StopAtTrue, CREATE_CAPI_STRING_VIEW(command), CREATE_CAPI_STRING_VIEW(parameters));
 	}
 
 	void onRconLoginAttempt(IPlayer& player, StringView password, bool success) override
@@ -25,6 +26,6 @@ struct ConsoleEvents : public ConsoleEventHandler, public Singleton<ConsoleEvent
 		PeerAddress::ToString(data.networkID.address, addressString);
 		StringView addressStringView = StringView(addressString.data(), addressString.length());
 
-		ComponentManager::Get()->CallEvent("onRconLoginAttempt", EventReturnHandler::StopAtTrue, CREATE_CAPI_STRING_VIEW(addressStringView), CREATE_CAPI_STRING_VIEW(password), success);
+		ComponentManager::Get()->CallEvent<PRIORITY>("onRconLoginAttempt", EventReturnHandler::StopAtTrue, CREATE_CAPI_STRING_VIEW(addressStringView), CREATE_CAPI_STRING_VIEW(password), success);
 	}
 };

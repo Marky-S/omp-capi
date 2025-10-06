@@ -88,40 +88,44 @@ public:
 	}
 
 	// Call event
-	template <typename... Args>
+	template <EventPriorityType PRIORITY, typename... Args>
 	bool CallEvent(const Impl::String& name, EventReturnHandler returnHandler, Args... args)
 	{
-		auto highest_ = highestPriorityEvents.find(name);
-		auto high_ = fairlyHighPriorityEvents.find(name);
-		auto default_ = defaultPriorityEvents.find(name);
-		auto low_ = fairlyLowPriorityEvents.find(name);
-		auto lowest_ = lowestPriorityEvents.find(name);
+		FlatHashMap<Impl::String, FlatHashSet<EventCallback_Common>>* container = nullptr;
+		if constexpr (PRIORITY == EventPriorityType_Highest)
+		{
+			container = &highestPriorityEvents;
+		}
+		else if constexpr (PRIORITY == EventPriorityType_FairlyHigh)
+		{
+			container = &fairlyHighPriorityEvents;
+		}
+		else if constexpr (PRIORITY == EventPriorityType_Default)
+		{
+			container = &defaultPriorityEvents;
+		}
+		else if constexpr (PRIORITY == EventPriorityType_FairlyHigh)
+		{
+			container = &fairlyLowPriorityEvents;
+		}
+		else if constexpr (PRIORITY == EventPriorityType_Lowest)
+		{
+			container = &lowestPriorityEvents;
+		}
 
 		bool result;
 
-		if (highest_ != highestPriorityEvents.end())
+		if (container)
 		{
-			result = CallEventOfPriority(highest_, returnHandler, args...);
-		}
-
-		if (high_ != fairlyHighPriorityEvents.end())
-		{
-			result = CallEventOfPriority(high_, returnHandler, args...);
-		}
-
-		if (default_ != defaultPriorityEvents.end())
-		{
-			result = CallEventOfPriority(default_, returnHandler, args...);
-		}
-
-		if (low_ != fairlyLowPriorityEvents.end())
-		{
-			result = CallEventOfPriority(low_, returnHandler, args...);
-		}
-
-		if (lowest_ != lowestPriorityEvents.end())
-		{
-			result = CallEventOfPriority(lowest_, returnHandler, args...);
+			auto callbacks = container->find(name);
+			if (callbacks != container->end())
+			{
+				auto ret = CallEventOfPriority(callbacks, returnHandler, args...);
+				if (!ret)
+				{
+					result = false;
+				}
+			}
 		}
 
 		return result;
@@ -213,13 +217,13 @@ inline PlayerDataType* GetPlayerData(IPlayer* player)
 #define POOL_ENTITY_RET(pool, entity_type, entity, output, failret) \
 	if (!ComponentManager::Get()->pool)                             \
 		return failret;                                             \
-	auto pool = ComponentManager::Get() -> pool;                    \
+	auto pool = ComponentManager::Get()->pool;                      \
 	ENTITY_CAST_RET(entity_type, entity, output, failret)
 
 #define POOL_ENTITY(pool, entity_type, entity, output) \
 	if (!ComponentManager::Get()->pool)                \
 		return;                                        \
-	auto pool = ComponentManager::Get() -> pool;       \
+	auto pool = ComponentManager::Get()->pool;         \
 	ENTITY_CAST(entity_type, entity, output)
 
 #define PLAYER_POOL_ENTITY_RET(player, pool_type, entity_type, entity, entity_output, failret) \

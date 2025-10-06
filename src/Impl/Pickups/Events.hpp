@@ -11,13 +11,14 @@
 #include "../../Utils/Singleton.hpp"
 #include "sdk.hpp"
 
-struct PickupEvents : public PickupEventHandler, public Singleton<PickupEvents>
+template <EventPriorityType PRIORITY>
+struct PickupEvents : public PickupEventHandler, public Singleton<PickupEvents<PRIORITY>>
 {
 	void onPlayerPickUpPickup(IPlayer& player, IPickup& pickup) override
 	{
 		if (pickup.getLegacyPlayer() == nullptr)
 		{
-			ComponentManager::Get()->CallEvent("onPlayerPickUpPickup", EventReturnHandler::None, &player, &pickup);
+			ComponentManager::Get()->CallEvent<PRIORITY>("onPlayerPickUpPickup", EventReturnHandler::None, &player, &pickup);
 		}
 		else if (auto data = queryExtension<IPlayerPickupData>(player))
 		{

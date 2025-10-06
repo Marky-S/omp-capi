@@ -11,10 +11,11 @@
 #include "../../Utils/Singleton.hpp"
 #include "sdk.hpp"
 
-struct ClassEvents : public ClassEventHandler, public Singleton<ClassEvents>
+template <EventPriorityType PRIORITY>
+struct ClassEvents : public ClassEventHandler, public Singleton<ClassEvents<PRIORITY>>
 {
 	bool onPlayerRequestClass(IPlayer& player, unsigned int classId) override
 	{
-		return ComponentManager::Get()->CallEvent("onPlayerRequestClass", EventReturnHandler::StopAtFalse, &player, int(classId));
+		return ComponentManager::Get()->CallEvent<PRIORITY>("onPlayerRequestClass", EventReturnHandler::StopAtFalse, &player, int(classId));
 	}
 };

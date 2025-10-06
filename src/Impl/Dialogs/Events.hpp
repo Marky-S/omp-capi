@@ -11,10 +11,11 @@
 #include "../../Utils/Singleton.hpp"
 #include "sdk.hpp"
 
-struct DialogEvents : public PlayerDialogEventHandler, public Singleton<DialogEvents>
+template <EventPriorityType PRIORITY>
+struct DialogEvents : public PlayerDialogEventHandler, public Singleton<DialogEvents<PRIORITY>>
 {
 	void onDialogResponse(IPlayer& player, int dialogId, DialogResponse response, int listItem, StringView inputText) override
 	{
-		ComponentManager::Get()->CallEvent("onDialogResponse", EventReturnHandler::None, &player, dialogId, int(response), listItem, CREATE_CAPI_STRING_VIEW(inputText));
+		ComponentManager::Get()->CallEvent<PRIORITY>("onDialogResponse", EventReturnHandler::None, &player, dialogId, int(response), listItem, CREATE_CAPI_STRING_VIEW(inputText));
 	}
 };

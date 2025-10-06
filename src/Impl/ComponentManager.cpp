@@ -22,28 +22,44 @@
 #include "CustomModels/Events.hpp"
 #include "ComponentManager.hpp"
 
-#define ADD_EVENT_HANDLER(component, event_instance)                     \
-	if (component)                                                       \
-	{                                                                    \
-		component->getEventDispatcher().addEventHandler(event_instance); \
+#define ADD_EVENT_HANDLER(component, event_instance)                                                                                    \
+	if (component)                                                                                                                      \
+	{                                                                                                                                   \
+		component->getEventDispatcher().addEventHandler(event_instance<EventPriorityType_Highest>::Get(), EventPriority_Highest);       \
+		component->getEventDispatcher().addEventHandler(event_instance<EventPriorityType_FairlyHigh>::Get(), EventPriority_FairlyHigh); \
+		component->getEventDispatcher().addEventHandler(event_instance<EventPriorityType_Default>::Get(), EventPriority_Default);       \
+		component->getEventDispatcher().addEventHandler(event_instance<EventPriorityType_FairlyLow>::Get(), EventPriority_FairlyLow);   \
+		component->getEventDispatcher().addEventHandler(event_instance<EventPriorityType_Lowest>::Get(), EventPriority_Lowest);         \
 	}
 
-#define ADD_PLAYER_EVENT_HANDLER(component, event_name, event_instance)                 \
-	if (component)                                                                      \
-	{                                                                                   \
-		component->getPlayer##event_name##Dispatcher().addEventHandler(event_instance); \
+#define ADD_PLAYER_EVENT_HANDLER(component, event_name, event_instance)                                                                                \
+	if (component)                                                                                                                                     \
+	{                                                                                                                                                  \
+		component->getPlayer##event_name##Dispatcher().addEventHandler(event_instance<EventPriorityType_Highest>::Get(), EventPriority_Highest);       \
+		component->getPlayer##event_name##Dispatcher().addEventHandler(event_instance<EventPriorityType_FairlyHigh>::Get(), EventPriority_FairlyHigh); \
+		component->getPlayer##event_name##Dispatcher().addEventHandler(event_instance<EventPriorityType_Default>::Get(), EventPriority_Default);       \
+		component->getPlayer##event_name##Dispatcher().addEventHandler(event_instance<EventPriorityType_FairlyLow>::Get(), EventPriority_FairlyLow);   \
+		component->getPlayer##event_name##Dispatcher().addEventHandler(event_instance<EventPriorityType_Lowest>::Get(), EventPriority_Lowest);         \
 	}
 
-#define REMOVE_EVENT_HANDLER(component, event_instance)                     \
-	if (component)                                                          \
-	{                                                                       \
-		component->getEventDispatcher().removeEventHandler(event_instance); \
+#define REMOVE_EVENT_HANDLER(component, event_instance)                                                          \
+	if (component)                                                                                               \
+	{                                                                                                            \
+		component->getEventDispatcher().removeEventHandler(event_instance<EventPriorityType_Highest>::Get());    \
+		component->getEventDispatcher().removeEventHandler(event_instance<EventPriorityType_FairlyHigh>::Get()); \
+		component->getEventDispatcher().removeEventHandler(event_instance<EventPriorityType_Default>::Get());    \
+		component->getEventDispatcher().removeEventHandler(event_instance<EventPriorityType_FairlyLow>::Get());  \
+		component->getEventDispatcher().removeEventHandler(event_instance<EventPriorityType_Lowest>::Get());     \
 	}
 
-#define REMOVE_PLAYER_EVENT_HANDLER(component, event_name, event_instance)                 \
-	if (component)                                                                         \
-	{                                                                                      \
-		component->getPlayer##event_name##Dispatcher().removeEventHandler(event_instance); \
+#define REMOVE_PLAYER_EVENT_HANDLER(component, event_name, event_instance)                                                      \
+	if (component)                                                                                                              \
+	{                                                                                                                           \
+		component->getPlayer##event_name##Dispatcher().removeEventHandler(event_instance<EventPriorityType_Highest>::Get());    \
+		component->getPlayer##event_name##Dispatcher().removeEventHandler(event_instance<EventPriorityType_FairlyHigh>::Get()); \
+		component->getPlayer##event_name##Dispatcher().removeEventHandler(event_instance<EventPriorityType_Default>::Get());    \
+		component->getPlayer##event_name##Dispatcher().removeEventHandler(event_instance<EventPriorityType_FairlyLow>::Get());  \
+		component->getPlayer##event_name##Dispatcher().removeEventHandler(event_instance<EventPriorityType_Lowest>::Get());     \
 	}
 
 #define RETRIEVE_RELEVANT_EVENT_MAP(container, priority)                               \
@@ -93,58 +109,58 @@ void ComponentManager::Init(ICore* c, IComponentList* clist)
 
 void ComponentManager::InitializeEvents()
 {
-	ADD_EVENT_HANDLER(core, CoreEvents::Get());
-	ADD_EVENT_HANDLER(actors, ActorEvents::Get());
-	ADD_EVENT_HANDLER(checkpoints, CheckpointEvents::Get());
-	ADD_EVENT_HANDLER(classes, ClassEvents::Get());
-	ADD_EVENT_HANDLER(dialogs, DialogEvents::Get());
-	ADD_EVENT_HANDLER(menus, MenuEvents::Get());
-	ADD_EVENT_HANDLER(textdraws, TextDrawEvents::Get());
-	ADD_EVENT_HANDLER(pickups, PickupEvents::Get());
-	ADD_EVENT_HANDLER(vehicles, VehicleEvents::Get());
-	ADD_EVENT_HANDLER(objects, ObjectEvents::Get());
-	ADD_EVENT_HANDLER(console, ConsoleEvents::Get());
-	ADD_EVENT_HANDLER(gangzones, GangZoneEvents::Get());
-	ADD_EVENT_HANDLER(models, CustomModelsEvents::Get());
+	ADD_EVENT_HANDLER(core, CoreEvents);
+	ADD_EVENT_HANDLER(actors, ActorEvents);
+	ADD_EVENT_HANDLER(checkpoints, CheckpointEvents);
+	ADD_EVENT_HANDLER(classes, ClassEvents);
+	ADD_EVENT_HANDLER(dialogs, DialogEvents);
+	ADD_EVENT_HANDLER(menus, MenuEvents);
+	ADD_EVENT_HANDLER(textdraws, TextDrawEvents);
+	ADD_EVENT_HANDLER(pickups, PickupEvents);
+	ADD_EVENT_HANDLER(vehicles, VehicleEvents);
+	ADD_EVENT_HANDLER(objects, ObjectEvents);
+	ADD_EVENT_HANDLER(console, ConsoleEvents);
+	ADD_EVENT_HANDLER(gangzones, GangZoneEvents);
+	ADD_EVENT_HANDLER(models, CustomModelsEvents);
 
-	ADD_PLAYER_EVENT_HANDLER(players, Spawn, PlayerEvents::Get());
-	ADD_PLAYER_EVENT_HANDLER(players, Connect, PlayerEvents::Get());
-	ADD_PLAYER_EVENT_HANDLER(players, Stream, PlayerEvents::Get());
-	ADD_PLAYER_EVENT_HANDLER(players, Text, PlayerEvents::Get());
-	ADD_PLAYER_EVENT_HANDLER(players, Shot, PlayerEvents::Get());
-	ADD_PLAYER_EVENT_HANDLER(players, Change, PlayerEvents::Get());
-	ADD_PLAYER_EVENT_HANDLER(players, Damage, PlayerEvents::Get());
-	ADD_PLAYER_EVENT_HANDLER(players, Click, PlayerEvents::Get());
-	ADD_PLAYER_EVENT_HANDLER(players, Check, PlayerEvents::Get());
-	ADD_PLAYER_EVENT_HANDLER(players, Update, PlayerEvents::Get());
+	ADD_PLAYER_EVENT_HANDLER(players, Spawn, PlayerEvents);
+	ADD_PLAYER_EVENT_HANDLER(players, Connect, PlayerEvents);
+	ADD_PLAYER_EVENT_HANDLER(players, Stream, PlayerEvents);
+	ADD_PLAYER_EVENT_HANDLER(players, Text, PlayerEvents);
+	ADD_PLAYER_EVENT_HANDLER(players, Shot, PlayerEvents);
+	ADD_PLAYER_EVENT_HANDLER(players, Change, PlayerEvents);
+	ADD_PLAYER_EVENT_HANDLER(players, Damage, PlayerEvents);
+	ADD_PLAYER_EVENT_HANDLER(players, Click, PlayerEvents);
+	ADD_PLAYER_EVENT_HANDLER(players, Check, PlayerEvents);
+	ADD_PLAYER_EVENT_HANDLER(players, Update, PlayerEvents);
 }
 
 void ComponentManager::FreeEvents()
 {
-	REMOVE_EVENT_HANDLER(core, CoreEvents::Get());
-	REMOVE_EVENT_HANDLER(actors, ActorEvents::Get());
-	REMOVE_EVENT_HANDLER(checkpoints, CheckpointEvents::Get());
-	REMOVE_EVENT_HANDLER(classes, ClassEvents::Get());
-	REMOVE_EVENT_HANDLER(dialogs, DialogEvents::Get());
-	REMOVE_EVENT_HANDLER(menus, MenuEvents::Get());
-	REMOVE_EVENT_HANDLER(textdraws, TextDrawEvents::Get());
-	REMOVE_EVENT_HANDLER(pickups, PickupEvents::Get());
-	REMOVE_EVENT_HANDLER(vehicles, VehicleEvents::Get());
-	REMOVE_EVENT_HANDLER(objects, ObjectEvents::Get());
-	REMOVE_EVENT_HANDLER(console, ConsoleEvents::Get());
-	REMOVE_EVENT_HANDLER(gangzones, GangZoneEvents::Get());
-	REMOVE_EVENT_HANDLER(models, CustomModelsEvents::Get());
+	REMOVE_EVENT_HANDLER(core, CoreEvents);
+	REMOVE_EVENT_HANDLER(actors, ActorEvents);
+	REMOVE_EVENT_HANDLER(checkpoints, CheckpointEvents);
+	REMOVE_EVENT_HANDLER(classes, ClassEvents);
+	REMOVE_EVENT_HANDLER(dialogs, DialogEvents);
+	REMOVE_EVENT_HANDLER(menus, MenuEvents);
+	REMOVE_EVENT_HANDLER(textdraws, TextDrawEvents);
+	REMOVE_EVENT_HANDLER(pickups, PickupEvents);
+	REMOVE_EVENT_HANDLER(vehicles, VehicleEvents);
+	REMOVE_EVENT_HANDLER(objects, ObjectEvents);
+	REMOVE_EVENT_HANDLER(console, ConsoleEvents);
+	REMOVE_EVENT_HANDLER(gangzones, GangZoneEvents);
+	REMOVE_EVENT_HANDLER(models, CustomModelsEvents);
 
-	REMOVE_PLAYER_EVENT_HANDLER(players, Spawn, PlayerEvents::Get());
-	REMOVE_PLAYER_EVENT_HANDLER(players, Connect, PlayerEvents::Get());
-	REMOVE_PLAYER_EVENT_HANDLER(players, Stream, PlayerEvents::Get());
-	REMOVE_PLAYER_EVENT_HANDLER(players, Text, PlayerEvents::Get());
-	REMOVE_PLAYER_EVENT_HANDLER(players, Shot, PlayerEvents::Get());
-	REMOVE_PLAYER_EVENT_HANDLER(players, Change, PlayerEvents::Get());
-	REMOVE_PLAYER_EVENT_HANDLER(players, Damage, PlayerEvents::Get());
-	REMOVE_PLAYER_EVENT_HANDLER(players, Click, PlayerEvents::Get());
-	REMOVE_PLAYER_EVENT_HANDLER(players, Check, PlayerEvents::Get());
-	REMOVE_PLAYER_EVENT_HANDLER(players, Update, PlayerEvents::Get());
+	REMOVE_PLAYER_EVENT_HANDLER(players, Spawn, PlayerEvents);
+	REMOVE_PLAYER_EVENT_HANDLER(players, Connect, PlayerEvents);
+	REMOVE_PLAYER_EVENT_HANDLER(players, Stream, PlayerEvents);
+	REMOVE_PLAYER_EVENT_HANDLER(players, Text, PlayerEvents);
+	REMOVE_PLAYER_EVENT_HANDLER(players, Shot, PlayerEvents);
+	REMOVE_PLAYER_EVENT_HANDLER(players, Change, PlayerEvents);
+	REMOVE_PLAYER_EVENT_HANDLER(players, Damage, PlayerEvents);
+	REMOVE_PLAYER_EVENT_HANDLER(players, Click, PlayerEvents);
+	REMOVE_PLAYER_EVENT_HANDLER(players, Check, PlayerEvents);
+	REMOVE_PLAYER_EVENT_HANDLER(players, Update, PlayerEvents);
 }
 
 bool ComponentManager::AddEventHandler(const Impl::String& name, EventPriorityType priority, EventCallback_Common callback)
