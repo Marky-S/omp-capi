@@ -1416,7 +1416,7 @@ OMP_CAPI(Player_IsCuffed, bool(objectPtr player))
 	return cuffed;
 }
 
-OMP_CAPI(Player_IsPlayerUsingOmp, bool(objectPtr player))
+OMP_CAPI(Player_IsUsingOmp, bool(objectPtr player))
 {
 	POOL_ENTITY_RET(players, IPlayer, player, player_, false);
 	bool ret = bool(player_->isUsingOmp());

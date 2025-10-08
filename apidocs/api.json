@@ -3747,7 +3747,7 @@
     },
     {
       "ret": "bool",
-      "name": "Player_IsPlayerUsingOmp",
+      "name": "Player_IsUsingOmp",
       "params": [
         {
           "name": "player",
