@@ -1199,6 +1199,20 @@ struct EventArgs_onPlayerText {
 };
 typedef bool (*EventCallback_onPlayerText)(struct EventArgs_onPlayerText args);
 
+struct EventArgs_onPlayerWeaponShot {
+    int size;
+    struct {
+        void** player;
+        int* weapon;
+        int* hitType;
+        int* hitId;
+        float* x;
+        float* y;
+        float* z;
+    } *list;
+};
+typedef bool (*EventCallback_onPlayerWeaponShot)(struct EventArgs_onPlayerWeaponShot args);
+
 struct EventArgs_onPlayerShotMissed {
     int size;
     struct {
