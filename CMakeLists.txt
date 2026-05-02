@@ -64,9 +64,7 @@ endif()
 
 message(TARGET_BUILD_ARCH = "${TARGET_BUILD_ARCH}")
 
-if(NOT TARGET OMP-SDK)
-    add_subdirectory(sdk)
-endif()
+add_subdirectory(sdk)
 
 file(GLOB_RECURSE CAPI_FILES
     "include/*.h"
